@@ -19,14 +19,14 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Ripristino pacchetti (Restore)
-      run: dotnet restore ProgettoMvcDemo.sln
+      run: dotnet restore
 
     - name: Compilazione e creazione pacchetto (.NET Publish)
-      run: dotnet publish ProgettoMvcDemo.sln --configuration Release --output ${{ github.workspace }}/output_package
+      run: dotnet publish -c Release -o ${{ github.workspace }}/myapp
 
     - name: Deploy su Azure App Service
       uses: azure/webapps-deploy@v3
       with:
         app-name: 'api-dotnet-uni-yassine'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ github.workspace }}/output_package
+        package: '${{ github.workspace }}/myapp'
