@@ -1,0 +1,33 @@
+name: .NET Core CI-CD Pipeline
+
+# 1. Quando attivare l'automazione?
+on:
+  push:
+    branches: [ "main" ] # Si attiva ogni volta che fai un 'git push' sul ramo main
+  pull_request:
+    branches: [ "main" ]
+
+# 2. Quali azioni deve eseguire la macchina virtuale?
+jobs:
+  build:
+    name: Compilazione e Verifica (CI)
+    runs-on: ubuntu-latest # Usa una macchina Linux temporanea e gratuita di GitHub
+
+    steps:
+    # Passo A: Scarica il tuo codice nella macchina virtuale
+    - name: Checkout del codice
+      uses: actions/checkout@v4
+
+    # Passo B: Installa l'ambiente .NET 8 ufficiale
+    - name: Configurazione ambiente .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    # Passo C: Scarica i pacchetti NuGet (le dipendenze del progetto)
+    - name: Ripristino pacchetti (Restore)
+      run: dotnet restore
+
+    # Passo D: Compila il codice in modalità Release
+    - name: Compilazione del progetto (Build)
+      run: dotnet build --no-restore --configuration Release
