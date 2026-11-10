@@ -19,16 +19,14 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Ripristino pacchetti (Restore)
-      run: dotnet restore
+      run: dotnet restore ProgettoMvcDemo.sln
 
-    # Abbiamo corretto il percorso di output mettendolo nella cartella di lavoro assoluta
     - name: Compilazione e creazione pacchetto (.NET Publish)
-      run: dotnet publish --configuration Release --output ${{ github.workspace }}/publish_folder
+      run: dotnet publish ProgettoMvcDemo.sln --configuration Release --output ${{ github.workspace }}/output_package
 
-    # DEPLOY AUTOMATICO CON PERCORSO CORRETTO
     - name: Deploy su Azure App Service
       uses: azure/webapps-deploy@v3
       with:
         app-name: 'api-dotnet-uni-yassine'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ github.workspace }}/publish_folder # Percorso corretto!
+        package: ${{ github.workspace }}/output_package
