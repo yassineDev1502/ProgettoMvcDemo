@@ -21,13 +21,14 @@ jobs:
     - name: Ripristino pacchetti (Restore)
       run: dotnet restore
 
+    # Abbiamo corretto il percorso di output mettendolo nella cartella di lavoro assoluta
     - name: Compilazione e creazione pacchetto (.NET Publish)
-      run: dotnet publish --configuration Release --output ./publish_folder
+      run: dotnet publish --configuration Release --output ${{ github.workspace }}/publish_folder
 
-    # DEPLOY AUTOMATICO CON IL TUO PROFILO DI PUBBLICAZIONE SBLOCCATO!
+    # DEPLOY AUTOMATICO CON PERCORSO CORRETTO
     - name: Deploy su Azure App Service
       uses: azure/webapps-deploy@v3
       with:
-        app-name: 'api-dotnet-uni-yassine' # Il tuo server di Milano creato con Terraform
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} # Legge il segreto inserito sopra
-        package: ./publish_folder
+        app-name: 'api-dotnet-uni-yassine'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ github.workspace }}/publish_folder # Percorso corretto!
