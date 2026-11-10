@@ -1,4 +1,4 @@
-name: .NET Core CI-CD Pipeline
+﻿name: .NET Core CI-CD Pipeline
 
 on:
   push:
@@ -18,12 +18,17 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    # Forza l'Agent ad entrare nella sottocartella dove c'è il vero codice
     - name: Ripristino pacchetti (Restore)
+      working-directory: ./ProgettoMvcDemo
       run: dotnet restore
 
+    # Forza la compilazione nella sottocartella e sposta l'output all'esterno
     - name: Compilazione e creazione pacchetto (.NET Publish)
+      working-directory: ./ProgettoMvcDemo
       run: dotnet publish -c Release -o ${{ github.workspace }}/myapp
 
+    # Ora l'Agent troverà la cartella 'myapp' al 100%
     - name: Deploy su Azure App Service
       uses: azure/webapps-deploy@v3
       with:
